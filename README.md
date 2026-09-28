@@ -91,3 +91,51 @@ PostgreSQL / Redis
 ```
 
 Only the application layer is directly reachable from the Internet. PostgreSQL and Redis remain private and receive traffic only from authorized application resources.
+
+## Network Design
+
+The architecture uses two non-overlapping IPv4 CIDR blocks, one for each VPC.
+
+| Network         | CIDR          | Purpose                                          |
+| --------------- | ------------- | ------------------------------------------------ |
+| Application VPC | `10.0.0.0/24` | Application infrastructure                       |
+| Data VPC        | `10.0.1.0/24` | PostgreSQL, Redis, and supporting infrastructure |
+
+### Application VPC
+
+The application VPC initially contains two public subnets distributed across different Availability Zones.
+
+| Subnet               | CIDR           | Type   | Usable IPv4 addresses |
+| -------------------- | -------------- | ------ | --------------------: |
+| Application Public A | `10.0.0.0/26`  | Public |                    59 |
+| Application Public B | `10.0.0.64/26` | Public |                    59 |
+
+The remaining address space is reserved for future expansion.
+
+### Data VPC
+
+The data VPC initially contains two private subnets.
+
+| Subnet         | CIDR           | Type    | Usable IPv4 addresses |
+| -------------- | -------------- | ------- | --------------------: |
+| Data Private A | `10.0.1.0/26`  | Private |                    59 |
+| Data Private B | `10.0.1.64/26` | Private |                    59 |
+
+The remaining address space can later be divided into additional subnets for components such as NAT infrastructure or other services.
+
+### CIDR Layout
+
+```mermaid
+flowchart LR
+    subgraph APP["Application VPC — 10.0.0.0/24"]
+        A["Public A<br/>10.0.0.0/26"]
+        B["Public B<br/>10.0.0.64/26"]
+        AR["Reserved<br/>10.0.0.128/25"]
+    end
+
+    subgraph DATA["Data VPC — 10.0.1.0/24"]
+        C["Private A<br/>10.0.1.0/26"]
+        D["Private B<br/>10.0.1.64/26"]
+        DR["Reserved<br/>10.0.1.128/25"]
+    end
+```
