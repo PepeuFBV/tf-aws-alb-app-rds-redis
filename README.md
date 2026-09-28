@@ -28,3 +28,66 @@ The infrastructure must satisfy the following requirements:
 - Prevent direct SSH access from the Internet to resources that do not require it.
 - Use a Jump Host for administrative access.
 - Design the network with future expansion in mind.
+
+## Architecture
+
+The infrastructure is divided into two VPCs:
+
+- **Application VPC** — hosts the public-facing web application and the Application Load Balancer.
+- **Data VPC** — hosts PostgreSQL and Redis in private subnets.
+
+The two VPCs communicate through **VPC Peering**, allowing the application to reach the data services without exposing them directly to the Internet.
+
+```mermaid
+flowchart TB
+    Internet((Internet))
+
+    subgraph APP_VPC["Application VPC"]
+        ALB["Application Load Balancer"]
+
+        subgraph APP_A["Public Subnet A"]
+            APP1["Web Application"]
+        end
+
+        subgraph APP_B["Public Subnet B"]
+            APP2["Web Application"]
+        end
+    end
+
+    subgraph DATA_VPC["Data VPC"]
+        subgraph DATA_A["Private Subnet A"]
+            PG["PostgreSQL"]
+        end
+
+        subgraph DATA_B["Private Subnet B"]
+            REDIS["Redis"]
+        end
+    end
+
+    Internet --> ALB
+    ALB --> APP1
+    ALB --> APP2
+
+    APP1 -->|VPC Peering| PG
+    APP1 -->|VPC Peering| REDIS
+    APP2 -->|VPC Peering| PG
+    APP2 -->|VPC Peering| REDIS
+```
+
+### Traffic Flow
+
+The main request flow is:
+
+```text
+Internet
+   ↓
+Application Load Balancer
+   ↓
+Web Application
+   ↓
+VPC Peering
+   ↓
+PostgreSQL / Redis
+```
+
+Only the application layer is directly reachable from the Internet. PostgreSQL and Redis remain private and receive traffic only from authorized application resources.
