@@ -297,3 +297,51 @@ The same principle applies to the Data VPC:
 | Infrastructure Public A | `10.0.1.128/28` | AZ A              |
 
 Using multiple Availability Zones allows the architecture to continue operating even if resources in one zone become unavailable.
+
+## VPC Peering
+
+The Application VPC and Data VPC are connected through a VPC Peering connection.
+
+The peering connection allows resources in the Application VPC to communicate privately with resources in the Data VPC using their private IPv4 addresses.
+
+```mermaid
+flowchart LR
+    subgraph APP["Application VPC<br/>10.0.0.0/24"]
+        APP1["Application Instances"]
+    end
+
+    PEER["VPC Peering"]
+
+    subgraph DATA["Data VPC<br/>10.0.1.0/24"]
+        PG["PostgreSQL"]
+        REDIS["Redis"]
+    end
+
+    APP1 --> PEER
+    PEER --> PG
+    PEER --> REDIS
+```
+
+Creating the peering connection alone is not enough. Each VPC must also contain routes that direct traffic for the other VPC through the peering connection.
+
+### Application VPC Route
+
+```text
+Destination     Target
+10.0.0.0/24     local
+10.0.1.0/24     VPC Peering
+0.0.0.0/0       Internet Gateway
+```
+
+### Data VPC Private Route
+
+```text
+Destination     Target
+10.0.1.0/24     local
+10.0.0.0/24     VPC Peering
+0.0.0.0/0       NAT Gateway
+```
+
+The route `10.0.1.0/24 → VPC Peering` allows the application to reach the Data VPC.
+
+The reverse route `10.0.0.0/24 → VPC Peering` allows response traffic to return to the Application VPC.
