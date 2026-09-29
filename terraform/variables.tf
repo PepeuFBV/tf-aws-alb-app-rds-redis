@@ -15,3 +15,9 @@ variable "application_vpc_cidr" {
   type        = string
   default     = "10.0.0.0/24"
 }
+
+variable "application_public_subnet_a_cidr" {
+  description = "CIDR block for application public subnet A"
+  type        = string
+  default     = "10.0.0.0/26"
+}

@@ -8,3 +8,16 @@ resource "aws_vpc" "application" {
     Name = "${var.project_name}-application-vpc"
   }
 }
+
+resource "aws_subnet" "application_public_a" {
+  vpc_id = aws_vpc.application.id
+
+  cidr_block        = var.application_public_subnet_a_cidr
+  availability_zone = data.aws_availability_zones.available.names[0]
+
+  map_public_ip_on_launch = true # able to assign public IPs to instances launched in this subnet, doesn't make it public by default yet
+
+  tags = {
+    Name = "${var.project_name}-application-public-a"
+  }
+}
