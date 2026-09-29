@@ -34,3 +34,9 @@ output "data_public_infra_subnet_a_id" {
   description = "ID of the public infrastructure subnet in the data VPC"
   value       = aws_subnet.data_public_infra_a.id
 }
+
+
+output "application_data_peering_id" {
+  description = "ID of the VPC peering connection between application and data VPCs"
+  value       = aws_vpc_peering_connection.application_data.id
+}
