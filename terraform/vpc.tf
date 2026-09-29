@@ -103,3 +103,17 @@ resource "aws_subnet" "data_private_b" {
     Name = "${var.project_name}-data-private-b"
   }
 }
+
+
+resource "aws_subnet" "data_public_infra_a" {
+  vpc_id = aws_vpc.data.id
+
+  cidr_block        = var.data_public_infra_subnet_a_cidr
+  availability_zone = data.aws_availability_zones.available.names[0]
+
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name = "${var.project_name}-data-public-infra-a"
+  }
+}

@@ -28,3 +28,9 @@ output "data_private_subnet_b_id" {
   description = "ID of data private subnet B"
   value       = aws_subnet.data_private_b.id
 }
+
+
+output "data_public_infra_subnet_a_id" {
+  description = "ID of the public infrastructure subnet in the data VPC"
+  value       = aws_subnet.data_public_infra_a.id
+}

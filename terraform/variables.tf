@@ -47,3 +47,10 @@ variable "data_private_subnet_b_cidr" {
   type        = string
   default     = "10.0.1.64/26"
 }
+
+
+variable "data_public_infra_subnet_a_cidr" {
+  description = "CIDR block for the public infrastructure subnet in the data VPC"
+  type        = string
+  default     = "10.0.1.128/28"
+}
