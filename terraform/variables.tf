@@ -3,3 +3,15 @@ variable "aws_region" {
   type        = string
   default     = "us-east-1"
 }
+
+variable "project_name" {
+  description = "Name of the project"
+  type        = string
+  default     = "tf-aws-alb-app-rds-redis"
+}
+
+variable "application_vpc_cidr" {
+  description = "CIDR block for the application VPC"
+  type        = string
+  default     = "10.0.0.0/24"
+}
