@@ -77,3 +77,29 @@ resource "aws_vpc" "data" {
     Name = "${var.project_name}-data-vpc"
   }
 }
+
+resource "aws_subnet" "data_private_a" {
+  vpc_id = aws_vpc.data.id
+
+  cidr_block        = var.data_private_subnet_a_cidr
+  availability_zone = data.aws_availability_zones.available.names[0]
+
+  map_public_ip_on_launch = false # prevents automatic assignment of public IPs to instances in this subnet
+
+  tags = {
+    Name = "${var.project_name}-data-private-a"
+  }
+}
+
+resource "aws_subnet" "data_private_b" {
+  vpc_id = aws_vpc.data.id
+
+  cidr_block        = var.data_private_subnet_b_cidr
+  availability_zone = data.aws_availability_zones.available.names[1]
+
+  map_public_ip_on_launch = false # prevents automatic assignment of public IPs to instances in this subnet
+
+  tags = {
+    Name = "${var.project_name}-data-private-b"
+  }
+}

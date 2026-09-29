@@ -18,3 +18,13 @@ output "data_vpc_id" {
   description = "ID of the data VPC"
   value       = aws_vpc.data.id
 }
+
+output "data_private_subnet_a_id" {
+  description = "ID of data private subnet A"
+  value       = aws_subnet.data_private_a.id
+}
+
+output "data_private_subnet_b_id" {
+  description = "ID of data private subnet B"
+  value       = aws_subnet.data_private_b.id
+}
