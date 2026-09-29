@@ -139,3 +139,64 @@ flowchart LR
         DR["Reserved<br/>10.0.1.128/25"]
     end
 ```
+
+## Routing and Internet Access
+
+Each subnet is associated with a route table that determines where its traffic can be sent.
+
+### Public Application Subnets
+
+The application subnets are public because their route table contains a default route to an Internet Gateway.
+
+```text
+Destination     Target
+10.0.0.0/24     local
+0.0.0.0/0       Internet Gateway
+```
+
+The Internet Gateway provides connectivity between the Application VPC and the Internet. A subnet with a direct route to an Internet Gateway is considered public.
+
+```mermaid
+flowchart LR
+    Internet((Internet))
+    IGW["Internet Gateway"]
+    RT["Public Route Table"]
+    A["Public Subnet A"]
+    B["Public Subnet B"]
+
+    Internet <--> IGW
+    IGW <--> RT
+    RT --> A
+    RT --> B
+```
+
+### Private Data Subnets
+
+The data subnets do not have a direct route to an Internet Gateway and are therefore private.
+
+Initially, their route table contains only the local VPC route:
+
+```text
+Destination     Target
+10.0.1.0/24     local
+```
+
+PostgreSQL and Redis therefore cannot directly communicate with the public Internet.
+
+The project, however, requires private resources to access the Internet when necessary for updates.
+
+To support outbound Internet access without making these resources public, the architecture will later introduce a NAT Gateway:
+
+```text
+Private Resource
+      ↓
+Private Route Table
+      ↓
+NAT Gateway
+      ↓
+Internet Gateway
+      ↓
+Internet
+```
+
+A NAT Gateway allows resources in private subnets to initiate outbound connections while preventing unsolicited Internet connections from being initiated toward them.
