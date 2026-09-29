@@ -252,3 +252,48 @@ Destination     Target
 ```
 
 This allows private resources to initiate outbound connections without becoming directly reachable from the Internet.
+
+## Availability Zones
+
+The architecture distributes resources across multiple Availability Zones to reduce dependency on a single physical location.
+
+The Application VPC uses two public subnets, each located in a different Availability Zone:
+
+| Subnet               | CIDR           | Availability Zone |
+| -------------------- | -------------- | ----------------- |
+| Application Public A | `10.0.0.0/26`  | AZ A              |
+| Application Public B | `10.0.0.64/26` | AZ B              |
+
+This is also required by the Application Load Balancer: an ALB must use subnets from at least two different Availability Zones.
+
+```mermaid
+flowchart TB
+    Internet((Internet))
+    ALB["Application Load Balancer"]
+
+    subgraph VPC["Application VPC — 10.0.0.0/24"]
+        subgraph AZA["Availability Zone A"]
+            SUBA["Public Subnet A<br/>10.0.0.0/26"]
+            APP1["Application Instance"]
+        end
+
+        subgraph AZB["Availability Zone B"]
+            SUBB["Public Subnet B<br/>10.0.0.64/26"]
+            APP2["Application Instance"]
+        end
+    end
+
+    Internet --> ALB
+    ALB --> APP1
+    ALB --> APP2
+```
+
+The same principle applies to the Data VPC:
+
+| Subnet                  | CIDR            | Availability Zone |
+| ----------------------- | --------------- | ----------------- |
+| Data Private A          | `10.0.1.0/26`   | AZ A              |
+| Data Private B          | `10.0.1.64/26`  | AZ B              |
+| Infrastructure Public A | `10.0.1.128/28` | AZ A              |
+
+Using multiple Availability Zones allows the architecture to continue operating even if resources in one zone become unavailable.
