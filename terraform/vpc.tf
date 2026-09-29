@@ -117,3 +117,29 @@ resource "aws_subnet" "data_public_infra_a" {
     Name = "${var.project_name}-data-public-infra-a"
   }
 }
+
+resource "aws_internet_gateway" "data" {
+  vpc_id = aws_vpc.data.id
+
+  tags = {
+    Name = "${var.project_name}-data-igw"
+  }
+}
+
+resource "aws_route_table" "data_public_infra" {
+  vpc_id = aws_vpc.data.id
+
+  route {
+    cidr_block = "0.0.0.0/0" # any IPv4 address
+    gateway_id = aws_internet_gateway.data.id
+  }
+
+  tags = {
+    Name = "${var.project_name}-data-public-rt"
+  }
+}
+
+resource "aws_route_table_association" "data_public_infra_a" {
+  subnet_id      = aws_subnet.data_public_infra_a.id
+  route_table_id = aws_route_table.data_public.id
+}
