@@ -449,58 +449,79 @@ The infrastructure will be implemented incrementally using the following AWS res
 
 - Application Load Balancer
 - Target Group
-- Application instances
-- Security Groups
+- EC2 application instances
+- Docker and Docker Compose
+- Application Security Group
+
+The web application will run inside Docker containers on EC2 instances distributed across the two public application subnets.
 
 ### Data Layer
 
-- PostgreSQL
-- Redis
-- Private networking for both services
+The data services will also run on EC2 instances using Docker.
+
+- EC2 instance for PostgreSQL
+- PostgreSQL Docker container
+- EC2 instance for Redis
+- Redis Docker container
+- Docker Compose for service configuration
 - Dedicated Security Groups
+
+PostgreSQL and Redis will run on separate EC2 instances, providing independent execution environments as required by the project.
+
+```mermaid
+flowchart LR
+    subgraph DATA["Data VPC"]
+        subgraph PGHOST["Private EC2 — PostgreSQL"]
+            PG["PostgreSQL Container"]
+        end
+
+        subgraph REDISHOST["Private EC2 — Redis"]
+            REDIS["Redis Container"]
+        end
+    end
+```
 
 ### Administration
 
-- Jump Host
+- EC2 Jump Host
 - SSH access restricted to authorized administrator addresses
+- Administrative access to private EC2 instances through the Jump Host
 
-### High-Level Resource Map
+### Compute Model
 
 ```mermaid
 flowchart TB
-    Internet((Internet))
+    ALB["Application Load Balancer"]
 
-    subgraph APP["Application VPC"]
-        IGW1["Internet Gateway"]
-        ALB["Application Load Balancer"]
-        APP1["Application Instance A"]
-        APP2["Application Instance B"]
-        JUMP["Jump Host"]
+    subgraph APP1["EC2 Application A"]
+        D1["Docker"]
+        C1["Web Application Container"]
+        D1 --> C1
     end
 
-    PEER["VPC Peering"]
-
-    subgraph DATA["Data VPC"]
-        IGW2["Internet Gateway"]
-        NAT["NAT Gateway"]
-        PG["PostgreSQL"]
-        REDIS["Redis"]
+    subgraph APP2["EC2 Application B"]
+        D2["Docker"]
+        C2["Web Application Container"]
+        D2 --> C2
     end
 
-    Internet --> IGW1
-    IGW1 --> ALB
+    subgraph PGEC2["EC2 PostgreSQL"]
+        D3["Docker"]
+        PG["PostgreSQL Container"]
+        D3 --> PG
+    end
+
+    subgraph REDEC2["EC2 Redis"]
+        D4["Docker"]
+        REDIS["Redis Container"]
+        D4 --> REDIS
+    end
+
     ALB --> APP1
     ALB --> APP2
 
-    Internet --> JUMP
-
-    APP1 --> PEER
-    APP2 --> PEER
-    PEER --> PG
-    PEER --> REDIS
-
-    PG --> NAT
-    REDIS --> NAT
-    NAT --> IGW2
-    IGW2 --> Internet
+    APP1 --> PGEC2
+    APP1 --> REDEC2
+    APP2 --> PGEC2
+    APP2 --> REDEC2
 ```
