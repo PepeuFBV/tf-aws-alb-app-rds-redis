@@ -21,3 +21,9 @@ variable "application_public_subnet_a_cidr" {
   type        = string
   default     = "10.0.0.0/26"
 }
+
+variable "application_public_subnet_b_cidr" {
+  description = "CIDR block for application public subnet B"
+  type        = string
+  default     = "10.0.0.64/26"
+}

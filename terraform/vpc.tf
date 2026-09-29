@@ -21,3 +21,16 @@ resource "aws_subnet" "application_public_a" {
     Name = "${var.project_name}-application-public-a"
   }
 }
+
+resource "aws_subnet" "application_public_b" {
+  vpc_id = aws_vpc.application.id
+
+  cidr_block        = var.application_public_subnet_b_cidr
+  availability_zone = data.aws_availability_zones.available.names[1]
+
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name = "${var.project_name}-application-public-b"
+  }
+}
