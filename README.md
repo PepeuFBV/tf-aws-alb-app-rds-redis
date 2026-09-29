@@ -430,3 +430,77 @@ This separates two concerns:
 
 - **Route tables** determine whether a network path exists.
 - **Security Groups** determine whether traffic through that path is permitted.
+
+## AWS Resources
+
+The infrastructure will be implemented incrementally using the following AWS resources.
+
+### Networking
+
+- 2 VPCs
+- Public and private subnets
+- Internet Gateways
+- Route Tables
+- VPC Peering connection
+- NAT Gateway
+- Elastic IP for the NAT Gateway
+
+### Application Layer
+
+- Application Load Balancer
+- Target Group
+- Application instances
+- Security Groups
+
+### Data Layer
+
+- PostgreSQL
+- Redis
+- Private networking for both services
+- Dedicated Security Groups
+
+### Administration
+
+- Jump Host
+- SSH access restricted to authorized administrator addresses
+
+### High-Level Resource Map
+
+```mermaid
+flowchart TB
+    Internet((Internet))
+
+    subgraph APP["Application VPC"]
+        IGW1["Internet Gateway"]
+        ALB["Application Load Balancer"]
+        APP1["Application Instance A"]
+        APP2["Application Instance B"]
+        JUMP["Jump Host"]
+    end
+
+    PEER["VPC Peering"]
+
+    subgraph DATA["Data VPC"]
+        IGW2["Internet Gateway"]
+        NAT["NAT Gateway"]
+        PG["PostgreSQL"]
+        REDIS["Redis"]
+    end
+
+    Internet --> IGW1
+    IGW1 --> ALB
+    ALB --> APP1
+    ALB --> APP2
+
+    Internet --> JUMP
+
+    APP1 --> PEER
+    APP2 --> PEER
+    PEER --> PG
+    PEER --> REDIS
+
+    PG --> NAT
+    REDIS --> NAT
+    NAT --> IGW2
+    IGW2 --> Internet
+```
