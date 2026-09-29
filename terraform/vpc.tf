@@ -65,3 +65,15 @@ resource "aws_route_table_association" "application_public_b" {
   subnet_id      = aws_subnet.application_public_b.id
   route_table_id = aws_route_table.application_public.id
 }
+
+
+resource "aws_vpc" "data" {
+  cidr_block = var.data_vpc_cidr
+
+  enable_dns_support   = true
+  enable_dns_hostnames = true
+
+  tags = {
+    Name = "${var.project_name}-data-vpc"
+  }
+}

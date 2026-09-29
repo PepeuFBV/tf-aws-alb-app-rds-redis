@@ -12,3 +12,9 @@ output "application_public_subnet_b_id" {
   description = "ID of application public subnet B"
   value       = aws_subnet.application_public_b.id
 }
+
+
+output "data_vpc_id" {
+  description = "ID of the data VPC"
+  value       = aws_vpc.data.id
+}

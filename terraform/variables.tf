@@ -10,6 +10,7 @@ variable "project_name" {
   default     = "tf-aws-alb-app-rds-redis"
 }
 
+
 variable "application_vpc_cidr" {
   description = "CIDR block for the application VPC"
   type        = string
@@ -26,4 +27,11 @@ variable "application_public_subnet_b_cidr" {
   description = "CIDR block for application public subnet B"
   type        = string
   default     = "10.0.0.64/26"
+}
+
+
+variable "data_vpc_cidr" {
+  description = "CIDR block for the data VPC"
+  type        = string
+  default     = "10.0.1.0/24"
 }
