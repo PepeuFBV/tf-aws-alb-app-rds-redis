@@ -13,6 +13,9 @@
         },
         "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
     },
+    "mounts": [
+        "source=tf-aws-alb-app-rds-redis-aws,target=/home/vscode/.aws,type=volume"
+    ],
     "customizations": {
         "vscode": {
             "extensions": [
