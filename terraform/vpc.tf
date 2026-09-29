@@ -143,3 +143,48 @@ resource "aws_route_table_association" "data_public_infra_a" {
   subnet_id      = aws_subnet.data_public_infra_a.id
   route_table_id = aws_route_table.data_public.id
 }
+
+
+resource "aws_eip" "data_nat" {
+  domain = "vpc"
+
+  tags = {
+    Name = "${var.project_name}-data-nat-eip"
+  }
+}
+
+resource "aws_nat_gateway" "data" {
+  allocation_id = aws_eip.data_nat.id
+  subnet_id     = aws_subnet.data_public_infra_a.id
+
+  tags = {
+    Name = "${var.project_name}-data-nat"
+  }
+
+  depends_on = [
+    aws_internet_gateway.data
+  ]
+}
+
+resource "aws_route_table" "data_private" {
+  vpc_id = aws_vpc.data.id
+
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.data.id
+  }
+
+  tags = {
+    Name = "${var.project_name}-data-private-rt"
+  }
+}
+
+resource "aws_route_table_association" "data_private_a" {
+  subnet_id      = aws_subnet.data_private_a.id
+  route_table_id = aws_route_table.data_private.id
+}
+
+resource "aws_route_table_association" "data_private_b" {
+  subnet_id      = aws_subnet.data_private_b.id
+  route_table_id = aws_route_table.data_private.id
+}
