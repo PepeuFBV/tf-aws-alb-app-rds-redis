@@ -22,7 +22,19 @@
                 "hashicorp.terraform",
                 "amazonwebservices.aws-toolkit-vscode",
                 "ms-azuretools.vscode-docker"
-            ]
+            ],
+            "settings": {
+                "[terraform]": {
+                    "editor.defaultFormatter": "hashicorp.terraform",
+                    "editor.formatOnSave": true,
+                    "editor.formatOnSaveMode": "file"
+                },
+                "[terraform-vars]": {
+                    "editor.defaultFormatter": "hashicorp.terraform",
+                    "editor.formatOnSave": true,
+                    "editor.formatOnSaveMode": "file"
+                }
+            }
         }
     },
     "postCreateCommand": "terraform version && aws --version && docker --version && docker compose version",
