@@ -200,3 +200,55 @@ Internet
 ```
 
 A NAT Gateway allows resources in private subnets to initiate outbound connections while preventing unsolicited Internet connections from being initiated toward them.
+
+### Data VPC Internet Access
+
+The Data VPC requires a small public infrastructure subnet to provide outbound Internet access for resources inside the private subnets.
+
+The updated Data VPC address allocation is:
+
+| Subnet                  | CIDR            | Type    | Purpose          |
+| ----------------------- | --------------- | ------- | ---------------- |
+| Data Private A          | `10.0.1.0/26`   | Private | Data services    |
+| Data Private B          | `10.0.1.64/26`  | Private | Data services    |
+| Infrastructure Public A | `10.0.1.128/28` | Public  | NAT Gateway      |
+| Reserved                | Remaining range | —       | Future expansion |
+
+The NAT Gateway is deployed in the public infrastructure subnet and receives an Elastic IP address.
+
+```mermaid
+flowchart LR
+    Internet((Internet))
+    IGW["Internet Gateway"]
+    NAT["NAT Gateway"]
+
+    subgraph DATA["Data VPC — 10.0.1.0/24"]
+        PUB["Public Infrastructure Subnet<br/>10.0.1.128/28"]
+        PRIV_A["Private Data Subnet A<br/>10.0.1.0/26"]
+        PRIV_B["Private Data Subnet B<br/>10.0.1.64/26"]
+    end
+
+    PRIV_A --> NAT
+    PRIV_B --> NAT
+    NAT --- PUB
+    NAT --> IGW
+    IGW --> Internet
+```
+
+The public infrastructure subnet routes Internet-bound traffic directly to the Internet Gateway:
+
+```text
+Destination     Target
+10.0.1.0/24     local
+0.0.0.0/0       Internet Gateway
+```
+
+The private data subnets instead route Internet-bound traffic through the NAT Gateway:
+
+```text
+Destination     Target
+10.0.1.0/24     local
+0.0.0.0/0       NAT Gateway
+```
+
+This allows private resources to initiate outbound connections without becoming directly reachable from the Internet.
