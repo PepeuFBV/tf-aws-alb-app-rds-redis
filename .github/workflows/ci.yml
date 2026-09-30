@@ -14,7 +14,7 @@ permissions:
 jobs:
   terraform:
     name: Terraform Validate
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
 
     defaults:
       run:
@@ -41,7 +41,7 @@ jobs:
 
   compose:
     name: Docker Compose Validate
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
 
     steps:
       - name: Checkout
