@@ -6,6 +6,8 @@ on:
     paths:
       - "terraform/**"
       - "services/**"
+      - ".devcontainer/**"
+      - ".github/workflows/ci.yml"
       - ".github/workflows/terraform-ci.yml"
 
 permissions:
@@ -38,6 +40,21 @@ jobs:
 
       - name: Terraform Validate
         run: terraform validate -no-color
+
+  shell:
+    name: Shellcheck
+    runs-on: ubuntu-slim
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Install Shellcheck
+        run: sudo apt-get update && sudo apt-get install -y shellcheck
+
+      - name: Run Shellcheck
+        run: |
+          find . -type f -name "*.sh" -exec shellcheck {} \;
 
   compose:
     name: Docker Compose Validate
