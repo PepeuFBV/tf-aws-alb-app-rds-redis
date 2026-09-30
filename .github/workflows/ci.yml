@@ -6,9 +6,9 @@ on:
     paths:
       - "terraform/**"
       - "services/**"
+      - "scripts/**"
       - ".devcontainer/**"
       - ".github/workflows/ci.yml"
-      - ".github/workflows/terraform-ci.yml"
 
 permissions:
   contents: read
