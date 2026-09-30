@@ -38,7 +38,6 @@ module "security" {
   application_vpc_id = module.application_network.vpc_id
   data_vpc_id        = module.data_network.vpc_id
   application_port   = var.application_port
-  peering_id         = module.peering.id
 
   depends_on = [module.peering]
 }

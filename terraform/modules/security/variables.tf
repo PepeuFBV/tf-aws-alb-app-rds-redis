@@ -13,7 +13,3 @@ variable "data_vpc_id" {
 variable "application_port" {
   type = number
 }
-
-variable "peering_id" {
-  type = string
-}
