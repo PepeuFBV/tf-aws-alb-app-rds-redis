@@ -17,7 +17,8 @@
         "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
     },
     "mounts": [
-        "source=tf-aws-alb-app-rds-redis-aws,target=/home/vscode/.aws,type=volume"
+        "source=tf-aws-alb-app-rds-redis-aws,target=/home/vscode/.aws,type=volume",
+        "source=tf-aws-alb-app-rds-redis-aws,target=/home/vscode/.ssh,type=volume"
     ],
     "customizations": {
         "vscode": {
@@ -40,6 +41,6 @@
             }
         }
     },
-    "postCreateCommand": "terraform version && aws --version && docker --version && docker compose version",
+    "postCreateCommand": "bash .devcontainer/post-create.sh",
     "remoteUser": "vscode"
 }
