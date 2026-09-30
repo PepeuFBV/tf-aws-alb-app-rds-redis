@@ -40,3 +40,14 @@ output "application_data_peering_id" {
   description = "ID of the VPC peering connection between application and data VPCs"
   value       = module.peering.id
 }
+
+
+output "postgres_instance_id" {
+  description = "ID of the PostgreSQL EC2 instance"
+  value       = module.postgres_compute.instance_id
+}
+
+output "postgres_private_ip" {
+  description = "Private IPv4 address of the PostgreSQL EC2 instance"
+  value       = module.postgres_compute.private_ip
+}

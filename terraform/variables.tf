@@ -61,3 +61,9 @@ variable "application_port" {
   type        = number
   default     = 8080
 }
+
+variable "postgres_instance_type" {
+  description = "EC2 instance type used by PostgreSQL"
+  type        = string
+  default     = "t3.micro"
+}

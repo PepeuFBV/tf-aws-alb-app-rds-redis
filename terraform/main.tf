@@ -41,3 +41,19 @@ module "security" {
 
   depends_on = [module.peering]
 }
+
+
+module "postgres_compute" {
+  source = "./modules/postgres-compute"
+
+  project_name      = var.project_name
+  ami_id            = data.aws_ami.ubuntu.id
+  instance_type     = var.postgres_instance_type
+  subnet_id         = module.data_network.private_subnet_a_id
+  security_group_id = module.security.postgres_security_group_id
+
+  user_data = join("\n", [
+    file("${path.root}/../services/bootstrap/install-docker.sh"),
+    "mkdir -p /opt/postgres"
+  ])
+}
