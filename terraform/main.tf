@@ -44,13 +44,17 @@ module "security" {
 
 
 module "postgres_compute" {
-  source = "./modules/postgres-compute"
+  source = "./modules/ec2-service"
 
-  project_name      = var.project_name
-  ami_id            = data.aws_ami.ubuntu.id
-  instance_type     = var.postgres_instance_type
-  subnet_id         = module.data_network.private_subnet_a_id
-  security_group_id = module.security.postgres_security_group_id
+  project_name  = var.project_name
+  service_name  = "postgres"
+  ami_id        = data.aws_ami.ubuntu.id
+  instance_type = var.postgres_instance_type
+  subnet_id     = module.data_network.private_subnet_a_id
+
+  security_group_ids = [
+    module.security.postgres_security_group_id
+  ]
 
   user_data = join("\n", [
     file("${path.root}/../services/bootstrap/install-docker.sh"),
@@ -58,15 +62,18 @@ module "postgres_compute" {
   ])
 }
 
-
 module "redis_compute" {
-  source = "./modules/redis-compute"
+  source = "./modules/ec2-service"
 
-  project_name      = var.project_name
-  ami_id            = data.aws_ami.ubuntu.id
-  instance_type     = var.redis_instance_type
-  subnet_id         = module.data_network.private_subnet_b_id
-  security_group_id = module.security.redis_security_group_id
+  project_name  = var.project_name
+  service_name  = "redis"
+  ami_id        = data.aws_ami.ubuntu.id
+  instance_type = var.redis_instance_type
+  subnet_id     = module.data_network.private_subnet_b_id
+
+  security_group_ids = [
+    module.security.redis_security_group_id
+  ]
 
   user_data = join("\n", [
     file("${path.root}/../services/bootstrap/install-docker.sh"),
