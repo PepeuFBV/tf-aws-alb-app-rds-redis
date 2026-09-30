@@ -1,0 +1,69 @@
+name: Infrastructure CI
+
+on:
+  pull_request:
+    branches: [main, dev]
+    paths:
+      - "terraform/**"
+      - "services/**"
+      - ".github/workflows/terraform-ci.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  terraform:
+    name: Terraform Validate
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: terraform
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: "1.16.4"
+
+      - name: Terraform Init
+        run: terraform init -backend=false -input=false
+
+      - name: Terraform Format
+        run: terraform fmt -check -recursive -diff
+        working-directory: .
+
+      - name: Terraform Validate
+        run: terraform validate -no-color
+
+  compose:
+    name: Docker Compose Validate
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Validate application Compose
+        run: |
+          docker compose \
+            --env-file services/app/.env.example \
+            -f services/app/docker-compose.yml \
+            config --quiet
+
+      - name: Validate PostgreSQL Compose
+        run: |
+          docker compose \
+            --env-file services/postgres/.env.example \
+            -f services/postgres/docker-compose.yml \
+            config --quiet
+
+      - name: Validate Redis Compose
+        run: |
+          docker compose \
+            --env-file services/redis/.env.example \
+            -f services/redis/docker-compose.yml \
+            config --quiet
