@@ -17,6 +17,7 @@ curl -fsSL https://download.docker.com/linux/ubuntu/gpg \
 
 chmod a+r /etc/apt/keyrings/docker.asc
 
+# shellcheck disable=SC1091
 . /etc/os-release
 
 echo \
