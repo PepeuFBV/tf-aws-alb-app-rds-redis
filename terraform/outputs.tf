@@ -62,3 +62,19 @@ output "redis_private_ip" {
   description = "Private IPv4 address of the Redis EC2 instance"
   value       = module.redis_compute.private_ip
 }
+
+
+output "application_instance_a_id" {
+  description = "ID of application EC2 instance A"
+  value       = module.application_compute_a.instance_id
+}
+
+output "application_instance_b_id" {
+  description = "ID of application EC2 instance B"
+  value       = module.application_compute_b.instance_id
+}
+
+output "application_load_balancer_dns" {
+  description = "Public DNS name of the Application Load Balancer"
+  value       = module.application_load_balancer.dns_name
+}

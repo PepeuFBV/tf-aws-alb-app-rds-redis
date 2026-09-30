@@ -74,3 +74,10 @@ variable "redis_instance_type" {
   type        = string
   default     = "t3.micro"
 }
+
+
+variable "application_instance_type" {
+  description = "EC2 instance type used by application instances"
+  type        = string
+  default     = "t3.micro"
+}

@@ -114,3 +114,70 @@ resource "aws_vpc_security_group_egress_rule" "application_to_redis" {
 
   description = "Allow application traffic to Redis"
 }
+
+
+resource "aws_vpc_security_group_egress_rule" "application_http" {
+  security_group_id = aws_security_group.application.id
+
+  cidr_ipv4   = "0.0.0.0/0"
+  from_port   = 80
+  to_port     = 80
+  ip_protocol = "tcp"
+
+  description = "Allow application instances outbound HTTP"
+}
+
+resource "aws_vpc_security_group_egress_rule" "application_https" {
+  security_group_id = aws_security_group.application.id
+
+  cidr_ipv4   = "0.0.0.0/0"
+  from_port   = 443
+  to_port     = 443
+  ip_protocol = "tcp"
+
+  description = "Allow application instances outbound HTTPS"
+}
+
+resource "aws_vpc_security_group_egress_rule" "postgres_http" {
+  security_group_id = aws_security_group.postgres.id
+
+  cidr_ipv4   = "0.0.0.0/0"
+  from_port   = 80
+  to_port     = 80
+  ip_protocol = "tcp"
+
+  description = "Allow PostgreSQL host outbound HTTP"
+}
+
+resource "aws_vpc_security_group_egress_rule" "postgres_https" {
+  security_group_id = aws_security_group.postgres.id
+
+  cidr_ipv4   = "0.0.0.0/0"
+  from_port   = 443
+  to_port     = 443
+  ip_protocol = "tcp"
+
+  description = "Allow PostgreSQL host outbound HTTPS"
+}
+
+resource "aws_vpc_security_group_egress_rule" "redis_http" {
+  security_group_id = aws_security_group.redis.id
+
+  cidr_ipv4   = "0.0.0.0/0"
+  from_port   = 80
+  to_port     = 80
+  ip_protocol = "tcp"
+
+  description = "Allow Redis host outbound HTTP"
+}
+
+resource "aws_vpc_security_group_egress_rule" "redis_https" {
+  security_group_id = aws_security_group.redis.id
+
+  cidr_ipv4   = "0.0.0.0/0"
+  from_port   = 443
+  to_port     = 443
+  ip_protocol = "tcp"
+
+  description = "Allow Redis host outbound HTTPS"
+}

@@ -80,3 +80,65 @@ module "redis_compute" {
     "mkdir -p /opt/redis"
   ])
 }
+
+
+module "application_compute_a" {
+  source = "./modules/ec2-service"
+
+  project_name  = var.project_name
+  service_name  = "application-a"
+  ami_id        = data.aws_ami.ubuntu.id
+  instance_type = var.application_instance_type
+  subnet_id     = module.application_network.public_subnet_a_id
+
+  security_group_ids = [
+    module.security.application_security_group_id
+  ]
+
+  associate_public_ip_address = true
+
+  user_data = join("\n", [
+    file("${path.root}/../services/bootstrap/install-docker.sh"),
+    "mkdir -p /opt/app"
+  ])
+}
+
+module "application_compute_b" {
+  source = "./modules/ec2-service"
+
+  project_name  = var.project_name
+  service_name  = "application-b"
+  ami_id        = data.aws_ami.ubuntu.id
+  instance_type = var.application_instance_type
+  subnet_id     = module.application_network.public_subnet_b_id
+
+  security_group_ids = [
+    module.security.application_security_group_id
+  ]
+
+  associate_public_ip_address = true
+
+  user_data = join("\n", [
+    file("${path.root}/../services/bootstrap/install-docker.sh"),
+    "mkdir -p /opt/app"
+  ])
+}
+
+module "application_load_balancer" {
+  source = "./modules/application-load-balancer"
+
+  project_name      = var.project_name
+  vpc_id            = module.application_network.vpc_id
+  application_port  = var.application_port
+  security_group_id = module.security.alb_security_group_id
+
+  subnet_ids = [
+    module.application_network.public_subnet_a_id,
+    module.application_network.public_subnet_b_id
+  ]
+
+  target_instance_ids = [
+    module.application_compute_a.instance_id,
+    module.application_compute_b.instance_id
+  ]
+}
