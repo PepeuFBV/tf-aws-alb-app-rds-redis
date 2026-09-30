@@ -81,3 +81,20 @@ variable "application_instance_type" {
   type        = string
   default     = "t3.micro"
 }
+
+
+variable "ssh_public_key" {
+  description = "Public SSH key used for administrative EC2 access"
+  type        = string
+}
+
+variable "admin_cidr" {
+  description = "CIDR allowed to SSH into the Jump Host"
+  type        = string
+}
+
+variable "jump_host_instance_type" {
+  description = "EC2 instance type used by the Jump Host"
+  type        = string
+  default     = "t3.micro"
+}

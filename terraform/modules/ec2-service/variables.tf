@@ -27,6 +27,12 @@ variable "associate_public_ip_address" {
   default = false
 }
 
+variable "key_name" {
+  type    = string
+  default = null
+}
+
 variable "user_data" {
-  type = string
+  type    = string
+  default = null
 }

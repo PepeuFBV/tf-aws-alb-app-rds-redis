@@ -78,3 +78,17 @@ output "application_load_balancer_dns" {
   description = "Public DNS name of the Application Load Balancer"
   value       = module.application_load_balancer.dns_name
 }
+
+
+output "jump_host_public_ip" {
+  description = "Public IPv4 address of the Jump Host"
+  value       = module.jump_host.public_ip
+}
+
+output "application_instance_a_private_ip" {
+  value = module.application_compute_a.private_ip
+}
+
+output "application_instance_b_private_ip" {
+  value = module.application_compute_b.private_ip
+}

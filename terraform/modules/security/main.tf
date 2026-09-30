@@ -181,3 +181,63 @@ resource "aws_vpc_security_group_egress_rule" "redis_https" {
 
   description = "Allow Redis host outbound HTTPS"
 }
+
+
+resource "aws_security_group" "jump_host" {
+  name        = "${var.project_name}-jump-host-sg"
+  description = "Security group for the administrative Jump Host"
+  vpc_id      = var.application_vpc_id
+
+  tags = {
+    Name = "${var.project_name}-jump-host-sg"
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "jump_host_ssh" {
+  security_group_id = aws_security_group.jump_host.id
+
+  cidr_ipv4   = var.admin_cidr
+  from_port   = 22
+  to_port     = 22
+  ip_protocol = "tcp"
+
+  description = "Allow administrative SSH access"
+}
+
+resource "aws_vpc_security_group_ingress_rule" "application_from_jump_host" {
+  security_group_id            = aws_security_group.application.id
+  referenced_security_group_id = aws_security_group.jump_host.id
+
+  from_port   = 22
+  to_port     = 22
+  ip_protocol = "tcp"
+}
+
+resource "aws_vpc_security_group_ingress_rule" "postgres_from_jump_host" {
+  security_group_id            = aws_security_group.postgres.id
+  referenced_security_group_id = aws_security_group.jump_host.id
+
+  from_port   = 22
+  to_port     = 22
+  ip_protocol = "tcp"
+}
+
+resource "aws_vpc_security_group_ingress_rule" "redis_from_jump_host" {
+  security_group_id            = aws_security_group.redis.id
+  referenced_security_group_id = aws_security_group.jump_host.id
+
+  from_port   = 22
+  to_port     = 22
+  ip_protocol = "tcp"
+}
+
+resource "aws_vpc_security_group_egress_rule" "jump_host_ssh" {
+  security_group_id = aws_security_group.jump_host.id
+
+  cidr_ipv4   = "0.0.0.0/0"
+  from_port   = 22
+  to_port     = 22
+  ip_protocol = "tcp"
+
+  description = "Allow SSH connections from Jump Host"
+}
