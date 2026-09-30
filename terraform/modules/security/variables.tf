@@ -13,3 +13,7 @@ variable "data_vpc_id" {
 variable "application_port" {
   type = number
 }
+
+variable "admin_cidr" {
+  type = string
+}

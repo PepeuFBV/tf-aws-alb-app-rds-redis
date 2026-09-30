@@ -13,3 +13,8 @@ output "postgres_security_group_id" {
 output "redis_security_group_id" {
   value = aws_security_group.redis.id
 }
+
+
+output "jump_host_security_group_id" {
+  value = aws_security_group.jump_host.id
+}

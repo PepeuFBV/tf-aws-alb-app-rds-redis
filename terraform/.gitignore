@@ -1,2 +1,6 @@
 # generated files
 .terraform/
+
+# terraform vars files
+*.tfvars
+!*.tfvars.example

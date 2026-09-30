@@ -1,6 +1,9 @@
 {
     "name": "AWS Terraform Infrastructure",
-    "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "context": ".."
+    },
     "features": {
         "ghcr.io/devcontainers/features/common-utils:2": {
             "installZsh": true
@@ -14,7 +17,8 @@
         "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
     },
     "mounts": [
-        "source=tf-aws-alb-app-rds-redis-aws,target=/home/vscode/.aws,type=volume"
+        "source=tf-aws-alb-app-rds-redis-aws,target=/home/vscode/.aws,type=volume",
+        "source=tf-aws-alb-app-rds-redis-aws,target=/home/vscode/.ssh,type=volume"
     ],
     "customizations": {
         "vscode": {
@@ -37,6 +41,6 @@
             }
         }
     },
-    "postCreateCommand": "terraform version && aws --version && docker --version && docker compose version",
+    "postCreateCommand": "bash .devcontainer/post-create.sh",
     "remoteUser": "vscode"
 }

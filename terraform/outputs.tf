@@ -40,3 +40,55 @@ output "application_data_peering_id" {
   description = "ID of the VPC peering connection between application and data VPCs"
   value       = module.peering.id
 }
+
+
+output "postgres_instance_id" {
+  description = "ID of the PostgreSQL EC2 instance"
+  value       = module.postgres_compute.instance_id
+}
+
+output "postgres_private_ip" {
+  description = "Private IPv4 address of the PostgreSQL EC2 instance"
+  value       = module.postgres_compute.private_ip
+}
+
+
+output "redis_instance_id" {
+  description = "ID of the Redis EC2 instance"
+  value       = module.redis_compute.instance_id
+}
+
+output "redis_private_ip" {
+  description = "Private IPv4 address of the Redis EC2 instance"
+  value       = module.redis_compute.private_ip
+}
+
+
+output "application_instance_a_id" {
+  description = "ID of application EC2 instance A"
+  value       = module.application_compute_a.instance_id
+}
+
+output "application_instance_b_id" {
+  description = "ID of application EC2 instance B"
+  value       = module.application_compute_b.instance_id
+}
+
+output "application_load_balancer_dns" {
+  description = "Public DNS name of the Application Load Balancer"
+  value       = module.application_load_balancer.dns_name
+}
+
+
+output "jump_host_public_ip" {
+  description = "Public IPv4 address of the Jump Host"
+  value       = module.jump_host.public_ip
+}
+
+output "application_instance_a_private_ip" {
+  value = module.application_compute_a.private_ip
+}
+
+output "application_instance_b_private_ip" {
+  value = module.application_compute_b.private_ip
+}

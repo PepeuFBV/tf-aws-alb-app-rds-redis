@@ -38,6 +38,131 @@ module "security" {
   application_vpc_id = module.application_network.vpc_id
   data_vpc_id        = module.data_network.vpc_id
   application_port   = var.application_port
+  admin_cidr         = var.admin_cidr
 
   depends_on = [module.peering]
+}
+
+
+module "postgres_compute" {
+  source = "./modules/ec2-service"
+
+  project_name  = var.project_name
+  service_name  = "postgres"
+  ami_id        = data.aws_ami.ubuntu.id
+  instance_type = var.postgres_instance_type
+  subnet_id     = module.data_network.private_subnet_a_id
+  key_name      = aws_key_pair.admin.key_name
+
+  security_group_ids = [
+    module.security.postgres_security_group_id
+  ]
+
+  user_data = join("\n", [
+    file("${path.root}/../services/bootstrap/install-docker.sh"),
+    "mkdir -p /opt/postgres"
+  ])
+}
+
+module "redis_compute" {
+  source = "./modules/ec2-service"
+
+  project_name  = var.project_name
+  service_name  = "redis"
+  ami_id        = data.aws_ami.ubuntu.id
+  instance_type = var.redis_instance_type
+  subnet_id     = module.data_network.private_subnet_b_id
+  key_name      = aws_key_pair.admin.key_name
+
+  security_group_ids = [
+    module.security.redis_security_group_id
+  ]
+
+  user_data = join("\n", [
+    file("${path.root}/../services/bootstrap/install-docker.sh"),
+    "mkdir -p /opt/redis"
+  ])
+}
+
+
+module "application_compute_a" {
+  source = "./modules/ec2-service"
+
+  project_name  = var.project_name
+  service_name  = "application-a"
+  ami_id        = data.aws_ami.ubuntu.id
+  instance_type = var.application_instance_type
+  subnet_id     = module.application_network.public_subnet_a_id
+  key_name      = aws_key_pair.admin.key_name
+
+  security_group_ids = [
+    module.security.application_security_group_id
+  ]
+
+  associate_public_ip_address = true
+
+  user_data = join("\n", [
+    file("${path.root}/../services/bootstrap/install-docker.sh"),
+    "mkdir -p /opt/app"
+  ])
+}
+
+module "application_compute_b" {
+  source = "./modules/ec2-service"
+
+  project_name  = var.project_name
+  service_name  = "application-b"
+  ami_id        = data.aws_ami.ubuntu.id
+  instance_type = var.application_instance_type
+  subnet_id     = module.application_network.public_subnet_b_id
+  key_name      = aws_key_pair.admin.key_name
+
+  security_group_ids = [
+    module.security.application_security_group_id
+  ]
+
+  associate_public_ip_address = true
+
+  user_data = join("\n", [
+    file("${path.root}/../services/bootstrap/install-docker.sh"),
+    "mkdir -p /opt/app"
+  ])
+}
+
+module "application_load_balancer" {
+  source = "./modules/application-load-balancer"
+
+  project_name      = var.project_name
+  vpc_id            = module.application_network.vpc_id
+  application_port  = var.application_port
+  security_group_id = module.security.alb_security_group_id
+
+  subnet_ids = [
+    module.application_network.public_subnet_a_id,
+    module.application_network.public_subnet_b_id
+  ]
+
+  target_instance_ids = [
+    module.application_compute_a.instance_id,
+    module.application_compute_b.instance_id
+  ]
+}
+
+
+module "jump_host" {
+  source = "./modules/ec2-service"
+
+  project_name  = var.project_name
+  service_name  = "jump-host"
+  ami_id        = data.aws_ami.ubuntu.id
+  instance_type = var.jump_host_instance_type
+
+  subnet_id = module.application_network.public_subnet_a_id
+
+  security_group_ids = [
+    module.security.jump_host_security_group_id
+  ]
+
+  associate_public_ip_address = true
+  key_name                    = aws_key_pair.admin.key_name
 }
