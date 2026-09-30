@@ -10,6 +10,12 @@ Start the project in a devcontainer by following these steps:
 
 3. **Reopen in Container**: Click on the green bottom-left corner of VS Code and select "Reopen in Container". This will build the Docker container based on the configuration defined in the `.devcontainer` folder.
 
+## AWS Learner Lab credentials
+
+From a terminal in the devcontainer, run `./scripts/aws-login.sh` and enter the three Learner Lab values when prompted. The secret access key and session token are entered without echo. The helper saves them to the devcontainer's local `~/.aws/credentials` file, sets the default region to `us-east-1`, and checks the credentials with AWS STS.
+
+To paste the full credentials block instead, run `./scripts/aws-login.sh --paste`, paste the `[default]` block, then press Ctrl-D. A block can also be piped to the script. The AWS files live in the devcontainer's mounted `.aws` volume and are not repository files. Run the helper again when the Learner Lab session expires.
+
 ## Troubleshooting
 
 If you encounter any issues while setting up the devcontainer, here are some common troubleshooting steps:
