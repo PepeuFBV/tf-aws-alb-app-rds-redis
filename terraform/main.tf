@@ -57,3 +57,19 @@ module "postgres_compute" {
     "mkdir -p /opt/postgres"
   ])
 }
+
+
+module "redis_compute" {
+  source = "./modules/redis-compute"
+
+  project_name      = var.project_name
+  ami_id            = data.aws_ami.ubuntu.id
+  instance_type     = var.redis_instance_type
+  subnet_id         = module.data_network.private_subnet_b_id
+  security_group_id = module.security.redis_security_group_id
+
+  user_data = join("\n", [
+    file("${path.root}/../services/bootstrap/install-docker.sh"),
+    "mkdir -p /opt/redis"
+  ])
+}

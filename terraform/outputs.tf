@@ -51,3 +51,14 @@ output "postgres_private_ip" {
   description = "Private IPv4 address of the PostgreSQL EC2 instance"
   value       = module.postgres_compute.private_ip
 }
+
+
+output "redis_instance_id" {
+  description = "ID of the Redis EC2 instance"
+  value       = module.redis_compute.instance_id
+}
+
+output "redis_private_ip" {
+  description = "Private IPv4 address of the Redis EC2 instance"
+  value       = module.redis_compute.private_ip
+}

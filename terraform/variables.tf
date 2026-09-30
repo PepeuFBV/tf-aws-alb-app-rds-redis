@@ -67,3 +67,10 @@ variable "postgres_instance_type" {
   type        = string
   default     = "t3.micro"
 }
+
+
+variable "redis_instance_type" {
+  description = "EC2 instance type used by Redis"
+  type        = string
+  default     = "t3.micro"
+}
