@@ -33,6 +33,7 @@ jobs:
 
       - name: Terraform Format
         run: terraform fmt -check -recursive -diff
+        working-directory: .
 
       - name: Terraform Validate
         run: terraform validate -no-color
