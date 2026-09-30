@@ -54,3 +54,10 @@ variable "data_public_infra_subnet_a_cidr" {
   type        = string
   default     = "10.0.1.128/28"
 }
+
+
+variable "application_port" {
+  description = "Port exposed by the web application"
+  type        = number
+  default     = 8080
+}
