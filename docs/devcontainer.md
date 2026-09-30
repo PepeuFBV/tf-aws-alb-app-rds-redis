@@ -23,3 +23,5 @@ If you encounter any issues while setting up the devcontainer, here are some com
 - Check Docker Status: Ensure that Docker is running on your machine. You can check this by running `docker info` in your terminal.
 
 - Rebuild the Container: If you make changes to the devcontainer configuration, you may need to rebuild the container (or restart it). You can do this by clicking on the green bottom-left corner of VS Code and selecting "Rebuild Container".
+
+- Git over SSH: AWS credentials and SSH files use separate persistent volumes. GitHub SSH access uses the host's forwarded `SSH_AUTH_SOCK`; make sure an SSH agent with a GitHub-authorized key is running before opening the container.

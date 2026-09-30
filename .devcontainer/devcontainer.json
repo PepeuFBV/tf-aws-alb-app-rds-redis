@@ -18,8 +18,12 @@
     },
     "mounts": [
         "source=tf-aws-alb-app-rds-redis-aws,target=/home/vscode/.aws,type=volume",
-        "source=tf-aws-alb-app-rds-redis-aws,target=/home/vscode/.ssh,type=volume"
+        "source=tf-aws-alb-app-rds-redis-ssh,target=/home/vscode/.ssh,type=volume",
+        "source=${localEnv:SSH_AUTH_SOCK},target=/ssh-agent,type=bind"
     ],
+    "remoteEnv": {
+        "SSH_AUTH_SOCK": "/ssh-agent"
+    },
     "customizations": {
         "vscode": {
             "extensions": [
