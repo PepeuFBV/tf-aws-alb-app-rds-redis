@@ -134,12 +134,6 @@ Review that the plan uses the intended AWS account and `us-east-1`, the current 
 
 Terraform models routes, associations, and Security Group rules as individual resources, so the action count is higher than the headline infrastructure counts.
 
-### Current plan blocker
-
-In the checked-out source, `terraform plan` currently fails at `modules/application-load-balancer/main.tf` because `aws_lb_target_group_attachment.application` uses `for_each = var.target_instance_ids`, where the set values are EC2 instance IDs unknown until apply. Terraform needs stable `for_each` keys during planning. Do not work around this with `-target` and do not apply while the plan fails. The configuration needs a code change that gives the two attachments stable keys (for example, a map keyed by `application-a` and `application-b`) before a complete plan can be reviewed.
-
-If a plan returns any error, stop here. Do not run `terraform apply` until the issue is corrected and a fresh full plan has been reviewed.
-
 ## 6. Apply only after reviewing a successful plan
 
 Once the plan completes successfully and its resource changes, account, region, network ranges, instance types, and administrator CIDR have been reviewed:
