@@ -142,10 +142,10 @@ module "application_load_balancer" {
     module.application_network.public_subnet_b_id
   ]
 
-  target_instance_ids = [
-    module.application_compute_a.instance_id,
-    module.application_compute_b.instance_id
-  ]
+  target_instance_ids = {
+    a = module.application_compute_a.instance_id
+    b = module.application_compute_b.instance_id
+  }
 }
 
 

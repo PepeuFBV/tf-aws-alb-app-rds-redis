@@ -19,5 +19,5 @@ variable "application_port" {
 }
 
 variable "target_instance_ids" {
-  type = set(string)
+  type = map(string)
 }
