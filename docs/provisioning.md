@@ -208,7 +208,23 @@ The target group health check also uses `/health` and expects HTTP `200`. The cu
 
 If the check fails, inspect the EC2 user-data result and Docker Compose status on the relevant host through the Jump Host. Check service `.env` values and confirm PostgreSQL/Redis are deployed before the app. Do not expose passwords while collecting diagnostics.
 
-## 10. Tear down when the lab is finished
+## 10. Open the application in a web browser
+
+After the health check succeeds, get the public Application Load Balancer address:
+
+```bash
+terraform -chdir=terraform output -raw application_load_balancer_dns
+```
+
+Open `http://<application-load-balancer-dns>` in a browser, replacing the placeholder with that command's output. The listener currently accepts HTTP on port `80`; HTTPS is not configured. You can also print the complete URL with:
+
+```bash
+printf 'http://%s\n' "$(terraform -chdir=terraform output -raw application_load_balancer_dns)"
+```
+
+The application root route reads messages from PostgreSQL and renders `templates/index.html`. That template is not present in the current repository, so the ALB health check can pass while opening `/` returns an application error until the template is added. The `/health` endpoint returns JSON with PostgreSQL and Redis status fields, but its HTTP status is `200` even when either dependency is offline; check those fields as well as the ALB target health.
+
+## 11. Tear down when the lab is finished
 
 Back up any data you need first. PostgreSQL and Redis data are stored in Docker named volumes on their EC2 hosts; destroying the EC2 infrastructure deletes those hosts and their local data.
 
