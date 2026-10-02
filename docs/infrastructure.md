@@ -4,7 +4,7 @@
 
 ## AWS Resources
 
-The infrastructure will be implemented incrementally using the following AWS resources.
+The Terraform configuration declares the following AWS resources and is ready to deploy.
 
 ### Networking
 
@@ -26,11 +26,11 @@ See [networking](networking.md) for the address allocation, route details, and A
 - Docker and Docker Compose
 - Application Security Group
 
-The web application will run inside Docker containers on EC2 instances distributed across the two public application subnets.
+The web application is configured to run inside Docker containers on EC2 instances distributed across the two public application subnets.
 
 ### Data Layer
 
-The data services will also run on EC2 instances using Docker.
+The data services are configured to run on EC2 instances using Docker.
 
 - EC2 instance for PostgreSQL
 - PostgreSQL Docker container
@@ -39,7 +39,7 @@ The data services will also run on EC2 instances using Docker.
 - Docker Compose for service configuration
 - Dedicated Security Groups
 
-PostgreSQL and Redis will run on separate EC2 instances, providing independent execution environments as required by the project.
+PostgreSQL and Redis run on separate EC2 instances, providing independent execution environments as required by the project.
 
 ```mermaid
 flowchart LR
