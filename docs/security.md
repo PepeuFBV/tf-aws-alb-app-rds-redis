@@ -15,8 +15,9 @@ The Application Load Balancer accepts web traffic from the Internet.
 ```text
 Inbound
 80/tcp    from 0.0.0.0/0
-443/tcp   from 0.0.0.0/0
 ```
+
+The ALB listener accepts HTTP on port `80`. HTTPS and an inbound port `443` rule are not configured.
 
 ### Application Security Group
 
@@ -24,10 +25,10 @@ Application instances accept traffic only from the Application Load Balancer.
 
 ```text
 Inbound
-Application port    from ALB Security Group
+8080/tcp    from ALB Security Group
 ```
 
-The exact application port will be defined when the application layer is implemented.
+The application instances accept traffic on port `8080` only from the ALB Security Group.
 
 ### PostgreSQL Security Group
 
@@ -72,8 +73,8 @@ flowchart LR
     PG["PostgreSQL<br/>SG: PostgreSQL"]
     REDIS["Redis<br/>SG: Redis"]
 
-    INTERNET -->|"80 / 443"| ALB
-    ALB -->|"Application port"| APP
+    INTERNET -->|"80 / HTTP"| ALB
+    ALB -->|"8080"| APP
 
     APP -->|"5432"| PG
     APP -->|"6379"| REDIS

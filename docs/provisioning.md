@@ -222,7 +222,7 @@ Open `http://<application-load-balancer-dns>` in a browser, replacing the placeh
 printf 'http://%s\n' "$(terraform -chdir=terraform output -raw application_load_balancer_dns)"
 ```
 
-The application root route reads messages from PostgreSQL and renders `templates/index.html`. That template is not present in the current repository, so the ALB health check can pass while opening `/` returns an application error until the template is added. The `/health` endpoint returns JSON with PostgreSQL and Redis status fields, but its HTTP status is `200` even when either dependency is offline; check those fields as well as the ALB target health.
+The application root route reads messages from PostgreSQL and renders `services/app/templates/index.html`, which is included in the repository. The `/health` endpoint returns JSON with PostgreSQL and Redis status fields, but its HTTP status is `200` even when either dependency is offline; check those fields as well as the ALB target health.
 
 ## 11. Tear down when the lab is finished
 
